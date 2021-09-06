@@ -18,8 +18,9 @@ export class ChatGateway {
     client.broadcast.emit('chat', message);
   }
 
-  public EmitActiveUsersCount() {
-    const nUsers = this.usersService.getActiveUsers().length;
+  public onUserCreated() {
+    const users = this.usersService.getActiveUsers();
+    const nUsers = users.length;
     this.server.emit('active-users', nUsers);
   }
 }

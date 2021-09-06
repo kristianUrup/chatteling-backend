@@ -18,6 +18,6 @@ export class UsersController {
   @Post()
   registerUser(@Body() user: User): void {
     this.appService.registerUser(user);
-    this.usersGateWay.EmitActiveUsersCount();
+    this.usersGateWay.onUserCreated();
   }
 }

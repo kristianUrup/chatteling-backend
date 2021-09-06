@@ -7,6 +7,9 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { UsersService } from '../services/users.service';
+import { MessageIn } from '../models/messageIn';
+import { Message } from '../models/message';
+import { User } from '../models/user';
 
 @WebSocketGateway()
 export class ChatGateway implements OnGatewayConnection {
@@ -18,10 +21,7 @@ export class ChatGateway implements OnGatewayConnection {
   @WebSocketServer() server: Server;
 
   @SubscribeMessage('sendMessage')
-  async onMessageReceive(
-    client: Socket,
-    @MessageBody() message: { from: string; content: string },
-  ) {
+  async onMessageReceive(client: Socket, @MessageBody() message: MessageIn) {
     const msg = this.usersService.postMessage(message.from, message.content);
     this.server.emit('messages-new', msg);
   }
@@ -37,5 +37,16 @@ export class ChatGateway implements OnGatewayConnection {
     const nUsers = users.length;
     this.server.emit('active-users-count', nUsers);
     this.server.emit('active-users', users);
+  }
+
+  public emitNewUser(user: User): void {
+    const users = this.usersService.getActiveUsers();
+    const nUsers = users.length;
+    this.server.emit('active-users-new', users);
+    this.server.emit('active-users-count', nUsers);
+  }
+
+  public emitNewMessage(msg: Message): void {
+    this.server.emit('messages-new', msg);
   }
 }

@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import { User } from '../models/user';
-import { DataSource } from '../dataSource/dataSource';
+import { Injectable } from "@nestjs/common";
+import { User } from "../models/user";
+import { DataSource } from "../dataSource/dataSource";
+import { Message } from "../models/message";
 
 @Injectable()
 export class UsersService {
@@ -35,8 +36,3 @@ export class UsersService {
   }
 }
 
-export interface Message {
-  from: string;
-  sentAt: Date;
-  content: string;
-}

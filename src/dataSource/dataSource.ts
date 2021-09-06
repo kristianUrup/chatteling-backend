@@ -1,6 +1,6 @@
 import { User } from '../models/user';
 import { Injectable } from '@nestjs/common';
-import { Message } from '../services/users.service';
+import { Message } from "../models/message";
 
 @Injectable()
 export class DataSource {

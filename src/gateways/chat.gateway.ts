@@ -1,6 +1,5 @@
 import {
   MessageBody,
-  OnGatewayConnection,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
@@ -12,11 +11,8 @@ import { Message } from '../models/message';
 import { User } from '../models/user';
 
 @WebSocketGateway()
-export class ChatGateway implements OnGatewayConnection {
+export class ChatGateway {
   constructor(private usersService: UsersService) {}
-  handleConnection(client: any, ...args: any[]) {
-    this.emitUsersData();
-  }
 
   @WebSocketServer() server: Server;
 
@@ -24,6 +20,16 @@ export class ChatGateway implements OnGatewayConnection {
   async onMessageReceive(client: Socket, @MessageBody() message: MessageIn) {
     const msg = this.usersService.postMessage(message.from, message.content);
     this.server.emit('messages-new', msg);
+  }
+  
+  @SubscribeMessage('user-typing-client')
+  async onMessageTyping(client: Socket, @MessageBody() userTyping: string) {
+    this.server.emit('user-typing-server', userTyping);
+  }
+
+  @SubscribeMessage('user-drop-typing-client')
+  async onMessageDropTyping(client: Socket, @MessageBody() userTyping: string) {
+    this.server.emit('user-drop-typing-server', userTyping)
   }
 
   public onUserCreated() {

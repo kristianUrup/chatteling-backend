@@ -14,8 +14,12 @@ export class ChatGateway {
   @WebSocketServer() server: Server;
 
   @SubscribeMessage('sendMessage')
-  async onMessageReceive(client: Socket, @MessageBody() message: string) {
-    client.broadcast.emit('chat', message);
+  async onMessageReceive(
+    client: Socket,
+    @MessageBody() message: { from: string; content: string },
+  ) {
+    const msg = this.usersService.postMessage(message.from, message.content);
+    this.server.emit('messages-new', msg);
   }
 
   public onUserCreated() {
@@ -23,5 +27,7 @@ export class ChatGateway {
     const nUsers = users.length;
     this.server.emit('active-users-count', nUsers);
     this.server.emit('active-users', users);
+    const msgs = this.usersService.getMessages();
+    this.server.emit('messages-all', msgs);
   }
 }

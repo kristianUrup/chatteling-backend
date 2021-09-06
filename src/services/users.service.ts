@@ -18,4 +18,25 @@ export class UsersService {
   public getActiveUsers(): User[] {
     return this.data.users;
   }
+
+  public getMessages(): Message[] {
+    return this.data.messages;
+  }
+
+  public postMessage(from: string, content: string): Message {
+    const msg = {
+      from,
+      sentAt: new Date(),
+      content,
+    } as Message;
+
+    this.data.messages.push(msg);
+    return msg;
+  }
+}
+
+export interface Message {
+  from: string;
+  sentAt: Date;
+  content: string;
 }

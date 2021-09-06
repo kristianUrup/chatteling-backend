@@ -21,6 +21,7 @@ export class ChatGateway {
   public onUserCreated() {
     const users = this.usersService.getActiveUsers();
     const nUsers = users.length;
-    this.server.emit('active-users', nUsers);
+    this.server.emit('active-users-count', nUsers);
+    this.server.emit('active-users', users);
   }
 }
